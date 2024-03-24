@@ -10,7 +10,7 @@
         <module name="gateway-service" />
         <module name="service-registry" />
       </profile>
-      <profile name="Annotation profile for card-service" enabled="true">
+      <profile name="Annotation profile for user-registry" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
