@@ -16,4 +16,5 @@ public interface CardService<K, V> {
     ResponseEntity<String> delete(K id);
 
     ResponseEntity<List<V>> getAllCardsByUserId(K userId);
+    ResponseEntity<List<V>> getAllCards();
 }

@@ -41,4 +41,10 @@ public class CardController implements CardService<Integer, CardDto> {
     public ResponseEntity<List<CardDto>> getAllCardsByUserId(@PathVariable("id") Integer userId) {
         return this.cardServiceImpl.getAllCardsByUserId(userId);
     }
+
+    @Override
+    @GetMapping("/getAll")
+    public ResponseEntity<List<CardDto>> getAllCards() {
+        return this.cardServiceImpl.getAllCards();
+    }
 }

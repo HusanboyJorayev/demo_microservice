@@ -1,19 +1,29 @@
 package demo.userregistry.user;
 
-import demo.userregistry.feign.CardDto;
-import demo.userregistry.feign.CardFeign;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/user")
+@Tag(name = "USER-SERVICE END PINTS")
 public class UserController implements UserService<Integer, UserDto> {
+
     private final UserServiceImpl userServiceImpl;
-    private final CardFeign cardFeign;
+
+    // http://localhost:8080/api/user/create -> user
+    // http://localhost:8080/api/card/create -> card
 
     @Override
     @PostMapping("/create")
@@ -46,8 +56,19 @@ public class UserController implements UserService<Integer, UserDto> {
     }
 
     @GetMapping("/getAllCardsByUserId/{id}")
-    public ResponseEntity<List<CardDto>> getAllCardsByUserId(@PathVariable("id") Integer userId) {
-        return cardFeign.getAllCardsByUserId(userId);
+    @Operation(
+            description = "Get all cards by userId end point for user",
+            summary = "Summary for get end point")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ok", content = {
+                    @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = UserDto.class
+                            ))
+            })
+    })
+
+    public ResponseEntity<UserDto> getAllCardsByUserId(@PathVariable("id") Integer userId) {
+        return userServiceImpl.getAllCardsByUserId(userId);
     }
 }
 

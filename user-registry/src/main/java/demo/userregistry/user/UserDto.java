@@ -19,6 +19,7 @@ public class UserDto {
     private String firstname;
     private String lastname;
     private Integer age;
+    private List<CardDto>cards;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

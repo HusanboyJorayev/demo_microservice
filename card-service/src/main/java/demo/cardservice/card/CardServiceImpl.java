@@ -24,21 +24,14 @@ public class CardServiceImpl implements CardService<Integer, CardDto> {
 
     @Override
     public ResponseEntity<CardDto> get(Integer id) {
-        var optional = this.cardDao.findByIdAndDeletedAtIsNull(id);
-        if (optional.isEmpty()) {
-            return new ResponseEntity<>(new CardDto(), HttpStatus.BAD_REQUEST);
-        }
-        var card = optional.get();
+        var card = this.cardDao.findByIdAndDeletedAtIsNull(id)
+                .orElse(null);
         return new ResponseEntity<>(this.cardMapper.toDto(card), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<String> update(CardDto dto, Integer id) {
-        var optional = this.cardDao.findByIdAndDeletedAtIsNull(id);
-        if (optional.isEmpty()) {
-            return new ResponseEntity<>("User is not found", HttpStatus.BAD_REQUEST);
-        }
-        var card = optional.get();
+        var card = this.cardDao.findByIdAndDeletedAtIsNull(id).orElseThrow(null);
         card.setUpdatedAt(LocalDateTime.now());
         this.cardMapper.update(card, dto);
         this.cardDao.save(card);
@@ -47,11 +40,7 @@ public class CardServiceImpl implements CardService<Integer, CardDto> {
 
     @Override
     public ResponseEntity<String> delete(Integer id) {
-        var optional = this.cardDao.findByIdAndDeletedAtIsNull(id);
-        if (optional.isEmpty()) {
-            return new ResponseEntity<>("User is not deleted", HttpStatus.BAD_REQUEST);
-        }
-        var card = optional.get();
+        var card = this.cardDao.findByIdAndDeletedAtIsNull(id).orElseThrow();
         card.setDeletedAt(LocalDateTime.now());
         this.cardDao.delete(card);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
@@ -62,6 +51,15 @@ public class CardServiceImpl implements CardService<Integer, CardDto> {
         List<Card> list = this.cardDao.findByUserId(userId);
         if (list.isEmpty()) {
             return new ResponseEntity<>(List.of(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(list.stream().map(this.cardMapper::toDto).toList(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<CardDto>> getAllCards() {
+        List<Card> list = this.cardDao.findAll().stream().toList();
+        if (list.isEmpty()) {
+            return new ResponseEntity<>(null);
         }
         return new ResponseEntity<>(list.stream().map(this.cardMapper::toDto).toList(), HttpStatus.OK);
     }
